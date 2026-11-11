@@ -1,0 +1,421 @@
+/* 단골지킴이 공용 테마: 토큰, 웹폰트, 두 페이지가 같이 쓰는 부품.
+   폴더 탭은 nav.dg-folder-tabs 를 .dg-diary 의 직계 자식으로 둔다(틀 가장자리에 붙는다). */
+
+@font-face {
+  font-family: "Galmuri11";
+  src: url(/static/fonts/Galmuri11.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Galmuri11";
+  src: url(/static/fonts/Galmuri11-Bold.woff2) format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url(/static/fonts/Pretendard-Regular.subset.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url(/static/fonts/Pretendard-Bold.subset.woff2) format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --dg-sky:#bfe3f2; --dg-dot:#ffffff; --dg-paper:#ffffff; --dg-tab:#f28c28; --dg-tab-ink:#2b2b2b;
+  --dg-dash:#9fb3c8; --dg-ink:#2b2b2b; --dg-ink-soft:#4f5b66; --dg-late:#e2553f; --dg-late-ink:#b5361f;
+  --dg-back:#6cbf5a; --dg-back-ink:#2f7a22;
+  --dg-font-label:"Galmuri11","Gulim","굴림",monospace; --dg-font-body:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --dg-text:1.0625rem; --dg-text-label:0.8125rem; --dg-touch:44px; --dg-radius-frame:18px; --dg-tabbar-h:64px;
+
+  /* 파생 색: 위 토큰에서 한 단계 진하거나 옅게 */
+  --dg-frame-edge:#cddae6;
+  --dg-tab-edge:#cf6f14;
+  --dg-tab-hover:#e67c15;
+  --dg-wash:#f3f8fb;
+  --dg-focus:#1f5f8b;
+  --dg-shadow:rgba(38, 74, 102, 0.22);
+
+  color-scheme: light;
+  accent-color: var(--dg-tab);
+}
+
+/* ---------- 바탕과 브라우저 표면 ---------- */
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--dg-font-body);
+  font-size: var(--dg-text);
+  line-height: 1.6;
+  color: var(--dg-ink);
+  caret-color: var(--dg-tab-edge);
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--dg-tab); color: var(--dg-tab-ink); }
+
+a { color: var(--dg-ink); text-decoration-color: var(--dg-dash); text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+a:hover { text-decoration-color: var(--dg-tab-edge); }
+
+:focus-visible {
+  outline: 3px solid var(--dg-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+html { scrollbar-color: var(--dg-dash) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--dg-dash); border-radius: 10px; border: 2px solid var(--dg-paper); }
+
+.dg-sky {
+  background-color: var(--dg-sky);
+  background-image:
+    radial-gradient(circle at center, var(--dg-dot) 0 2px, transparent 2.6px),
+    radial-gradient(circle at center, var(--dg-dot) 0 1.4px, transparent 2px);
+  background-size: 24px 24px, 24px 24px;
+  background-position: 0 0, 12px 12px;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ---------- 다이어리 틀 ---------- */
+
+.dg-diary {
+  position: relative;
+  box-sizing: border-box;
+  background: var(--dg-paper);
+  border: 1px solid var(--dg-frame-edge);
+  border-bottom-width: 3px;
+  border-radius: var(--dg-radius-frame);
+  padding: clamp(1.125rem, 3vw, 2rem);
+}
+/* 안쪽 점선: 틀에서 6px 들어와 2px 짧은 점선 */
+.dg-diary::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 2px dashed var(--dg-dash);
+  border-radius: calc(var(--dg-radius-frame) - 6px);
+  pointer-events: none;
+}
+
+/* ---------- 라벨·카운터 ---------- */
+
+.dg-label {
+  font-family: var(--dg-font-label);
+  font-size: var(--dg-text-label);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--dg-ink-soft);
+}
+
+.dg-counter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.5rem;
+  font-family: var(--dg-font-label);
+  font-size: var(--dg-text-label);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--dg-ink-soft);
+  font-variant-numeric: tabular-nums;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--dg-frame-edge);
+  border-radius: 6px;
+  background: var(--dg-wash);
+}
+.dg-counter[hidden] { display: none; }
+.dg-counter b,
+.dg-counter strong { font-weight: 700; color: var(--dg-late-ink); }
+.dg-counter b + b,
+.dg-counter strong ~ strong { color: var(--dg-ink); }
+
+/* ---------- 버튼 ---------- */
+
+.dg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  min-height: var(--dg-touch);
+  min-width: var(--dg-touch);
+  padding: 0.5rem 1.25rem;
+  font: 700 1rem/1.25 var(--dg-font-body);
+  color: var(--dg-ink);
+  text-decoration: none;
+  text-align: center;
+  background: var(--dg-paper);
+  border: 1px solid var(--dg-dash);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.1s ease-out;
+}
+.dg-btn:active { transform: translateY(1px); }
+.dg-btn:disabled,
+.dg-btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.dg-btn--primary {
+  background: var(--dg-tab);
+  color: var(--dg-tab-ink);
+  border-color: var(--dg-tab-edge);
+  box-shadow: 0 1px 0 var(--dg-tab-edge), 0 6px 14px -8px rgba(207, 111, 20, 0.7);
+}
+.dg-btn--primary:hover { background: var(--dg-tab-hover); }
+.dg-btn--primary:active { box-shadow: 0 0 0 var(--dg-tab-edge), 0 3px 8px -6px rgba(207, 111, 20, 0.7); }
+
+.dg-btn--ghost {
+  background: var(--dg-paper);
+  color: var(--dg-ink);
+  border-color: var(--dg-dash);
+}
+.dg-btn--ghost:hover { background: var(--dg-wash); border-color: var(--dg-ink-soft); }
+
+.dg-btn[aria-busy="true"] { cursor: progress; opacity: 0.8; }
+
+/* ---------- 근거 쪽지 ---------- */
+
+.dg-note {
+  position: relative;
+  box-sizing: border-box;
+  padding: 0.875rem 1.75rem 0.875rem 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--dg-ink);
+  background: var(--dg-paper);
+  border: 1px dashed var(--dg-dash);
+  border-radius: 4px 0 4px 4px;
+  box-shadow: 0 6px 14px -10px var(--dg-shadow);
+}
+/* 오른쪽 위 접힌 귀퉁이 */
+.dg-note::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(225deg, var(--dg-paper) 0 50%, var(--dg-frame-edge) 50% 100%);
+  border-bottom-left-radius: 3px;
+}
+
+/* ---------- 방명록 ---------- */
+
+.dg-guestbook {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--dg-frame-edge);
+  border-bottom: 2px solid var(--dg-frame-edge);
+}
+.dg-guestbook > * {
+  position: relative;
+  margin: 0;
+  padding: 0.75rem 0.25rem;
+}
+.dg-guestbook > * + * { border-top: 1px dashed var(--dg-dash); }
+.dg-guestbook > :nth-child(even) { background: var(--dg-wash); }
+.dg-guestbook small,
+.dg-guestbook time {
+  font-family: var(--dg-font-label);
+  font-size: var(--dg-text-label);
+  color: var(--dg-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 늦음·복귀 표시 ---------- */
+
+.dg-late,
+.dg-back { font-weight: 700; }
+.dg-late { color: var(--dg-late-ink); }
+.dg-back { color: var(--dg-back-ink); }
+.dg-late::before,
+.dg-back::before {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.4em;
+  border-radius: 50%;
+  vertical-align: 0.08em;
+}
+.dg-late::before { background: var(--dg-late); }
+.dg-back::before { background: var(--dg-back); }
+
+/* ---------- 폴더 탭 ---------- */
+
+.dg-folder-tabs {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 2;
+}
+.dg-folder-tab {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--dg-touch);
+  font-family: var(--dg-font-label);
+  font-size: var(--dg-text-label);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--dg-tab-ink);
+  text-decoration: none;
+  background: var(--dg-tab);
+  border: 1px solid var(--dg-tab-edge);
+  cursor: pointer;
+  transition: background-color 0.15s ease-out;
+}
+.dg-folder-tab:hover { background: var(--dg-tab-hover); }
+.dg-folder-tab.is-active,
+.dg-folder-tab.is-active:hover {
+  background: var(--dg-paper);
+  color: var(--dg-ink);
+  border-color: var(--dg-frame-edge);
+  font-weight: 700;
+  cursor: default;
+}
+
+/* 넓은 화면: 틀 오른쪽 가장자리에 세로로 */
+@media (min-width: 1024px) {
+  .dg-diary:has(> .dg-folder-tabs) { margin-right: 8.5rem; }
+  .dg-diary > .dg-folder-tabs {
+    position: absolute;
+    top: 1.75rem;
+    left: 100%;
+    flex-direction: column;
+    gap: 3px;
+    width: max-content;
+    min-width: 7rem;
+  }
+  .dg-diary > .dg-folder-tabs .dg-folder-tab {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    margin-left: -1px;
+    padding: 0.5rem 0.875rem 0.5rem 0.75rem;
+    border-left: 0;
+    border-radius: 0 9px 9px 0;
+    box-shadow: inset 5px 0 6px -5px rgba(110, 54, 4, 0.45);
+  }
+  .dg-diary > .dg-folder-tabs .dg-folder-tab.is-active {
+    margin-left: -2px;
+    padding-left: calc(0.75rem + 1px);
+    box-shadow: 2px 3px 8px -6px var(--dg-shadow);
+  }
+}
+
+/* 중간 화면: 틀 위쪽에 가로로 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dg-diary:has(> .dg-folder-tabs) { margin-top: calc(var(--dg-touch) + 6px); }
+  .dg-diary > .dg-folder-tabs {
+    position: absolute;
+    bottom: 100%;
+    left: calc(var(--dg-radius-frame) + 6px);
+    right: var(--dg-radius-frame);
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dg-diary > .dg-folder-tabs .dg-folder-tab {
+    flex: 0 0 auto;
+    margin-bottom: -1px;
+    padding: 0.5rem 0.875rem;
+    white-space: nowrap;
+    border-bottom: 0;
+    border-radius: 9px 9px 0 0;
+    box-shadow: inset 0 -5px 6px -5px rgba(110, 54, 4, 0.45);
+  }
+  .dg-diary > .dg-folder-tabs .dg-folder-tab.is-active {
+    margin-bottom: -2px;
+    padding-bottom: calc(0.5rem + 1px);
+    box-shadow: none;
+  }
+}
+
+/* 휴대폰: 화면 아래 고정 바 */
+@media (max-width: 767px) {
+  body:has(.dg-folder-tabs) {
+    padding-bottom: calc(var(--dg-tabbar-h) + env(safe-area-inset-bottom));
+  }
+  .dg-folder-tabs {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    box-sizing: border-box;
+    height: calc(var(--dg-tabbar-h) + env(safe-area-inset-bottom));
+    padding: 0 max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    background: var(--dg-tab);
+    border-top: 1px solid var(--dg-tab-edge);
+    box-shadow: 0 -6px 16px -12px var(--dg-shadow);
+  }
+  .dg-folder-tabs .dg-folder-tab {
+    justify-content: center;
+    position: relative;
+    min-width: 0;
+    height: var(--dg-tabbar-h);
+    padding: 0 0.375rem;
+    font-size: clamp(0.75rem, 3.1vw, 0.8125rem);
+    text-align: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+  /* 칸 사이 짧은 세로 줄 */
+  .dg-folder-tabs .dg-folder-tab + .dg-folder-tab::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 25%;
+    bottom: 25%;
+    border-left: 1px solid var(--dg-tab-edge);
+  }
+  .dg-folder-tabs .dg-folder-tab:hover { background-color: var(--dg-tab-hover); }
+  .dg-folder-tabs .dg-folder-tab.is-active,
+  .dg-folder-tabs .dg-folder-tab.is-active:hover,
+  .dg-folder-tabs .dg-folder-tab.is-active::before,
+  .dg-folder-tabs .dg-folder-tab.is-active + .dg-folder-tab::before {
+    content: none;
+  }
+  .dg-folder-tabs .dg-folder-tab.is-active,
+  .dg-folder-tabs .dg-folder-tab.is-active:hover {
+    margin-top: -1px;
+    height: calc(var(--dg-tabbar-h) - 6px);
+    background-color: var(--dg-paper);
+    border: 1px solid var(--dg-tab-edge);
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+  }
+  .dg-folder-tabs .dg-folder-tab:focus-visible { outline-offset: -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-btn,
+  .dg-folder-tab { transition: none; }
+  .dg-btn:active { transform: none; }
+}
