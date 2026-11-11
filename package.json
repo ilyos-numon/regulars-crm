@@ -1,0 +1,26 @@
+{
+  "name": "regulars-crm",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx --env-file-if-exists=.env src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/unit",
+    "e2e": "playwright test",
+    "smoke:workflow": "bash scripts/workflow-smoke.sh"
+  },
+  "dependencies": {
+    "csv-parse": "^7.0.3",
+    "gsap": "3.15.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

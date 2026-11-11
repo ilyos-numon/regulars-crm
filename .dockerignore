@@ -1,0 +1,6 @@
+# 이미지에 들어가는 것만 허용한다(나머지는 전부 제외)
+*
+!package.json
+!package-lock.json
+!src
+!src/**
