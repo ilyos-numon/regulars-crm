@@ -1,0 +1,86 @@
+{
+  "id": "rcWeeklyChurn001",
+  "name": "단골지킴이 주간 알림",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Seoul"
+  },
+  "nodes": [
+    {
+      "id": "6f1c2a10-0001-4a00-8000-000000000001",
+      "name": "월요일 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6f1c2a10-0002-4a00-8000-000000000002",
+      "name": "수동 실행",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 200],
+      "parameters": {}
+    },
+    {
+      "id": "6f1c2a10-0003-4a00-8000-000000000003",
+      "name": "챙길 단골 가져오기",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 100],
+      "parameters": {
+        "method": "GET",
+        "url": "http://host.docker.internal:8790/api/churn?limit=5",
+        "options": {}
+      }
+    },
+    {
+      "id": "6f1c2a10-0004-4a00-8000-000000000004",
+      "name": "알림 문구 만들기",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 100],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const report = $input.first().json;\nconst candidates = Array.isArray(report.candidates) ? report.candidates : [];\nif (candidates.length === 0) {\n  return [{ json: { text: '이번 주 챙길 단골이 없습니다' } }];\n}\nconst lines = candidates.map((c) => {\n  const item = c.topItem === null || c.topItem === undefined ? '' : ` · ${c.topItem}`;\n  return `카드 ··${c.cardLast2}${item} — 평소 ${String(c.avgIntervalDays)}일마다 → ${String(c.daysSinceLast)}일째 (${String(c.delayRatio)}배)`;\n});\nconst text = [`이번 주 챙길 단골 ${candidates.length}명`, ...lines].join('\\n');\nreturn [{ json: { text } }];"
+      }
+    },
+    {
+      "id": "6f1c2a10-0005-4a00-8000-000000000005",
+      "name": "브리핑 보내기",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [780, 100],
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8790/api/briefing/send",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "월요일 09:00": {
+      "main": [[{ "node": "챙길 단골 가져오기", "type": "main", "index": 0 }]]
+    },
+    "수동 실행": {
+      "main": [[{ "node": "챙길 단골 가져오기", "type": "main", "index": 0 }]]
+    },
+    "챙길 단골 가져오기": {
+      "main": [[{ "node": "알림 문구 만들기", "type": "main", "index": 0 }]]
+    },
+    "알림 문구 만들기": {
+      "main": [[{ "node": "브리핑 보내기", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {}
+}
